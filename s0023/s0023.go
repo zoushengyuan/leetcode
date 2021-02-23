@@ -40,7 +40,7 @@ func mergeKLists(lists []*ListNode) *ListNode {
 }
 */
 
-clear
+
 func main() {
 	list1 := createList([]int{1, 4, 5})
 	list2 := createList([]int{1, 3, 4})
