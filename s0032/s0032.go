@@ -1,74 +1,116 @@
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
-func isValidRow(board [][]byte, row int) bool {
-	m := make(map[byte]int)
-	for col := 0; col < 9; col++ {
-		if m[board[row][col]] == '.' {
+type stack struct {
+	m []int
+	i int
+}
+
+func create(n int) *stack {
+	st := &stack{}
+	st.m = make([]int, n)
+	return st
+}
+
+func (st *stack) push(x int) {
+	st.m[st.i] = x
+	st.i++
+}
+
+func (st *stack) pop() (int, bool) {
+	if st.i > 0 {
+		st.i--
+		return st.m[st.i], true
+	}
+	return -1, false
+}
+
+func (st *stack) all() []int {
+	return st.m[:st.i]
+}
+
+func match(s []byte) {
+	n := len(s)
+	st := create(n)
+
+	for i := 0; i < n; i++ {
+		if s[i] == '(' {
+			st.push(i)
 			continue
 		}
-		if m[board[row][col]] == 1 {
-			return false
+		if j, ok := st.pop(); ok {
+			s[i] = 0
+			s[j] = 0
 		}
-		m[board[row][col]]++
 	}
-	return true
 }
 
-func isValidCol(board [][]byte, col int) bool {
-	m := make(map[byte]int)
-	for row := 0; row < 9; row++ {
-		if m[board[row][col]] == '.' {
-			continue
-		}
-		if m[board[row][col]] == 1 {
-			return false
-		}
-		m[board[row][col]]++
-	}
-	return true
-}
-
-func isValidBox(board [][]byte, row int, col int) bool {
-	m := make(map[byte]int)
-	for i := row; i < row+3; i++ {
-		for j := col; j < col+3; j++ {
-			if m[board[row][col]] == '.' {
-				continue
+func longestMatch(s []byte) int {
+	longest := 0
+	sum := 0
+	for _, c := range s {
+		if c == 0 {
+			sum++
+		} else {
+			if sum > longest {
+				longest = sum
 			}
-			if m[board[row][col]] == 1 {
-				return false
-			}
-			m[board[row][col]]++
+			sum = 0
 		}
 	}
-	return true
+	if sum > longest {
+		longest = sum
+	}
+	return longest
 }
 
-func isValidSudoku(board [][]byte) bool {
-	for row := 0; row < 9; row++ {
-		if !isValidRow(board, row) {
-			return false
-		}
-	}
-	for col := 0; col < 9; col++ {
-		if !isValidCol(board, col) {
-			return false
-		}
-	}
-	for row := 0; row < 9; row += 3 {
-		for col := 0; col < 9; col += 3 {
-			if !isValidBox(board, row, col) {
-				return false
+func longestValidParentheses(s string) int {
+	bs := []byte(s)
+	match(bs)
+	return longestMatch(bs)
+}
+
+func longestValidParentheses1(s string) int {
+	longest := 0
+	n := len(s)
+	size := 0
+	lefts := 0
+	for i := 0; i < n; i++ {
+		if s[i] == '(' {
+			lefts++
+			size++
+		} else {
+			if lefts > 0 {
+				lefts--
+				size++
+			} else {
+				if size > longest {
+					longest = size
+				}
+				size = 0
 			}
 		}
 	}
-	return true
+	size -= lefts
+	if size > longest {
+		longest = size
+	}
+	return longest
 }
 
 func main() {
-	fmt.Println()
+	var s string
+
+	s = "(()"
+	fmt.Println(longestValidParentheses(s))
+
+	s = ")()())"
+	fmt.Println(longestValidParentheses(s))
+
+	s = ""
+	fmt.Println(longestValidParentheses(s))
+
+	s = "()(()"
+	fmt.Println(longestValidParentheses(s))
 }

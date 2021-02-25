@@ -28,7 +28,7 @@ func nextPermutation(nums []int) {
 			nums[i], nums[j] = nums[j], nums[i]
 			//sort.Sort(sort.Reverse(sort.IntSlice(nums[i+1:])))
 			sort.Ints(nums[i+1:])
-			break
+			return
 		}
 	}
 }
