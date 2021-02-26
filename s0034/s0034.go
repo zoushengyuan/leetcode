@@ -10,7 +10,6 @@ func search(nums []int, target int) int {
 	hi := n - 1
 	for lo <= hi {
 		mid := lo + (hi-lo)/2
-		//fmt.Println(lo, mid, hi)
 		if nums[mid] > target {
 			hi = mid - 1
 		} else if nums[mid] < target {
@@ -23,35 +22,29 @@ func search(nums []int, target int) int {
 }
 
 func searchRange(nums []int, target int) []int {
-	r := search(nums, target)
-	if r == -1 {
+	start := search(nums, target)
+	if start == -1 {
 		return []int{-1, -1}
 	}
-	start := r
-
-	rs := r
-	for rs > 1 {
-		//fmt.Println(nums[:rs], target)
-
-		rs = search(nums[:rs], target)
-		//fmt.Println(rs)
-		if rs == -1 {
+	end := start
+	r := start
+	for r > 0 {
+		r = search(nums[:r], target)
+		if r == -1 {
 			break
 		}
-		start = rs
+		start = r
 	}
 
-	end := r
-	re := r
+	r = end
 	n := len(nums) - 1
-	for re < n {
-		temp := search(nums[re+1:], target)
-		//fmt.Println(re, nums[re+1:], temp)
-		if temp == -1 {
+	for r < n {
+		r = search(nums[r+1:], target)
+		if r == -1 {
 			break
 		}
-		end = re + 1 + temp
-		re = end
+		end = end + 1 + r
+		r = end
 	}
 
 	return []int{start, end}
@@ -75,6 +68,10 @@ func main() {
 
 	nums = []int{}
 	target = 0
+	fmt.Println(searchRange(nums, target))
+
+	nums = []int{1, 1, 2}
+	target = 1
 	fmt.Println(searchRange(nums, target))
 
 }
