@@ -71,34 +71,6 @@ func longestValidParentheses(s string) int {
 	return longestMatch(bs)
 }
 
-func longestValidParentheses1(s string) int {
-	longest := 0
-	n := len(s)
-	size := 0
-	lefts := 0
-	for i := 0; i < n; i++ {
-		if s[i] == '(' {
-			lefts++
-			size++
-		} else {
-			if lefts > 0 {
-				lefts--
-				size++
-			} else {
-				if size > longest {
-					longest = size
-				}
-				size = 0
-			}
-		}
-	}
-	size -= lefts
-	if size > longest {
-		longest = size
-	}
-	return longest
-}
-
 func main() {
 	var s string
 
